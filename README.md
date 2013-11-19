@@ -8,7 +8,7 @@ Simply make the Python file an executable via `chmod +x ssh-manager`
 
 # Usage
 
-## General Help Output
+### General Help Output
 
 ```bash
 ./ssh-manager -h
@@ -26,7 +26,7 @@ optional arguments:
   -h, --help            show this help message and exit
 ```
 
-## Connect Output
+### Connect Output
 
 ```bash
 ./ssh-manager connect
@@ -37,7 +37,7 @@ Choose a connection:
 Use: [number-here]
 ```
 
-## List Output
+### List Output
 
 ```bash
 ./ssh-manager list
@@ -47,7 +47,7 @@ Use: [number-here]
 There are 2 connections on file
 ```
 
-## Create Help Output
+### Create Help Output
 
 ```bash
 ./ssh-manager create -h
@@ -59,7 +59,7 @@ optional arguments:
   --username USERNAME  THe SSH username
 ```
 
-## Delete Output
+### Delete Output
 
 ```bash
 ./ssh-manager delete -h
