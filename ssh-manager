@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+import sys, argparse, subprocess
+
+parser  = argparse.ArgumentParser()
+actions = parser.add_subparsers(dest='action', help='actions')
+
+connect_parser = actions.add_parser('connect', help='Connect to a connection')
+
+list_parser = actions.add_parser('list', help='List connections')
+
+create_parser = actions.add_parser('create', help='Create a connection')
+create_parser.add_argument('--host', help='The SSH host IP or domain name', required=True)
+create_parser.add_argument('--username', help='THe SSH username', required=True)
+
+delete_parser = actions.add_parser('delete', help='Remove a connection')
+delete_parser.add_argument('--host', help='The SSH host IP or domain name', required=False)
+delete_parser.add_argument('--username', help='THe SSH username', required=False)
+
+args = parser.parse_args()
+
+if args.action == 'list':
+    sshs = [item for item in open('.ssh_strings', 'r').read().split("\n") if item != '']
+
+    print "\n".join([str(index + 1) + ') ' + name for index, name in enumerate(sshs)])
+
+    print "\nThere are %d connections on file" % len(sshs)
+elif args.action == 'create':
+    with open('.ssh_strings', 'a') as f:
+        f.write("\n%s@%s" % (args.username, args.host))
+
+    print 'Success: Connection has been created.'
+elif args.action == 'delete':
+    sshs = [item for item in open('.ssh_strings', 'r').read().split("\n") if item != '']
+
+    if args.host and args.username:
+        string = '%s@%s' % (args.username, args.host)
+
+        try:
+            sshs.remove(string)
+        except:
+            print 'Error: %s does not exist.' % string
+            sys.exit()
+    else:
+        choices = "\n".join([str(index + 1) + ') ' + name for index, name in enumerate(sshs)])
+        choice  = raw_input("Choose a connection:\n%s\n\nDelete: " % choices)
+
+        sshs.remove(sshs[int(choice) - 1])
+
+    with open('.ssh_strings', 'w') as f:
+        f.write("\n".join(sshs))
+
+    print 'Success: Connection has been removed.'
+elif args.action == 'connect':
+    sshs    = [item for item in open('.ssh_strings', 'r').read().split("\n") if item != '']
+    choices = "\n".join([str(index + 1) + ') ' + name for index, name in enumerate(sshs)])
+    choice  = raw_input("Choose a connection:\n%s\n\nUse: " % choices)
+
+    subprocess.call('ssh %s' % sshs[int(choice) - 1], shell=True)
+else:
+    print 'Error: %s is not a defined action' % args.action
